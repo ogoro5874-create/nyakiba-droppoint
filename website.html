@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyakiba DropPoint — Nairobi Package Pickup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0f2444;
+      --navy2:   #1e3a5f;
+      --blue:    #2563eb;
+      --blue2:   #3b82f6;
+      --light:   #eff6ff;
+      --white:   #ffffff;
+      --gray:    #64748b;
+      --lgray:   #f1f5f9;
+      --text:    #1e293b;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--white); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15,36,68,.96); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;  height: 64px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon { width: 36px; height: 36px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo-text { color: #fff; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { color: rgba(255,255,255,.7); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: var(--blue); color: #fff !important; padding: 8px 20px; border-radius: 8px; font-weight: 700 !important; font-size: 13px !important; }
+    .nav-cta:hover { background: var(--blue2) !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: .3s; }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 60%, #1e4d9e 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(59,130,246,.15) 0%, transparent 60%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,.15); border: 1px solid rgba(59,130,246,.3);
+      color: #93c5fd; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+      padding: 6px 14px; border-radius: 20px; text-transform: uppercase; margin-bottom: 28px;
+    }
+    .hero h1 {
+      color: #fff; font-size: clamp(36px, 6vw, 72px); font-weight: 900;
+      letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 20px; max-width: 800px;
+    }
+    .hero h1 span { color: var(--blue2); }
+    .hero p {
+      color: rgba(255,255,255,.7); font-size: clamp(16px, 2vw, 20px);
+      max-width: 560px; line-height: 1.6; margin-bottom: 40px;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 60px; }
+    .btn-primary {
+      background: var(--blue); color: #fff; text-decoration: none;
+      padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px;
+      border: none; cursor: pointer; transition: background .2s, transform .1s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: #fff; text-decoration: none;
+      padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px;
+      border: 1.5px solid rgba(255,255,255,.3); cursor: pointer; transition: .2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.05); }
+    .hero-stats {
+      display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
+      border-top: 1px solid rgba(255,255,255,.1); padding-top: 40px; width: 100%; max-width: 600px;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { color: #fff; font-size: 32px; font-weight: 900; letter-spacing: -0.03em; }
+    .hero-stat-label { color: rgba(255,255,255,.5); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 5%; }
+    .section-label { font-size: 12px; font-weight: 700; color: var(--blue); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 900; color: var(--navy); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+    .section-sub { font-size: 17px; color: var(--gray); line-height: 1.6; max-width: 560px; }
+    .section-center { text-align: center; }
+    .section-center .section-sub { margin: 0 auto; }
+
+    /* ── HOW IT WORKS ── */
+    .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 48px; }
+    .how-card {
+      background: var(--lgray); border-radius: 16px; padding: 28px 24px;
+      border-top: 3px solid var(--blue2); position: relative;
+    }
+    .how-num { font-size: 48px; font-weight: 900; color: rgba(37,99,235,.12); letter-spacing: -0.03em; line-height: 1; margin-bottom: 12px; }
+    .how-icon { font-size: 28px; margin-bottom: 12px; }
+    .how-title { font-weight: 800; font-size: 16px; color: var(--navy); margin-bottom: 8px; }
+    .how-desc { font-size: 14px; color: var(--gray); line-height: 1.6; }
+
+    /* ── SERVICES / PRICING ── */
+    .services-bg { background: var(--navy); }
+    .services-bg .section-title { color: #fff; }
+    .services-bg .section-label { color: #93c5fd; }
+    .services-bg .section-sub { color: rgba(255,255,255,.6); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 48px; }
+    .service-card {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px; padding: 28px 24px; transition: background .2s;
+    }
+    .service-card:hover { background: rgba(255,255,255,.1); }
+    .service-icon { font-size: 32px; margin-bottom: 14px; }
+    .service-name { color: #fff; font-weight: 800; font-size: 17px; margin-bottom: 8px; }
+    .service-desc { color: rgba(255,255,255,.6); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+    .service-price {
+      display: inline-flex; align-items: baseline; gap: 4px;
+      background: var(--blue); color: #fff; padding: 6px 14px; border-radius: 8px;
+    }
+    .service-price-amount { font-size: 20px; font-weight: 900; }
+    .service-price-label { font-size: 12px; opacity: .8; }
+
+    /* ── WHY US ── */
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 48px; }
+    .why-card { display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--lgray); border-radius: 14px; }
+    .why-icon { font-size: 24px; flex-shrink: 0; background: var(--light); width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .why-title { font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
+    .why-desc { font-size: 13px; color: var(--gray); line-height: 1.5; }
+
+    /* ── ABOUT ── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about-img {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 100%);
+      border-radius: 20px; aspect-ratio: 4/3; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 40px;
+    }
+    .about-img-icon { font-size: 64px; margin-bottom: 16px; }
+    .about-img-text { color: #fff; font-weight: 700; font-size: 18px; text-align: center; }
+    .about-img-sub { color: rgba(255,255,255,.6); font-size: 13px; margin-top: 6px; text-align: center; }
+    .about-detail { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 20px; }
+    .about-detail-icon { color: var(--blue); font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .about-detail-title { font-weight: 700; color: var(--navy); font-size: 15px; }
+    .about-detail-desc { font-size: 14px; color: var(--gray); line-height: 1.5; margin-top: 2px; }
+
+    /* ── CONTACT ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; margin-top: 48px; }
+    .contact-info-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 24px; }
+    .contact-info-icon { width: 44px; height: 44px; background: var(--light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .contact-info-label { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .06em; }
+    .contact-info-value { font-size: 15px; font-weight: 600; color: var(--navy); margin-top: 2px; }
+    .contact-form { background: var(--lgray); border-radius: 20px; padding: 32px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .form-input {
+      width: 100%; padding: 11px 14px; border-radius: 8px;
+      border: 1.5px solid #e2e8f0; font-size: 14px; font-family: inherit;
+      outline: none; color: var(--text); background: #fff; transition: border-color .2s;
+    }
+    .form-input:focus { border-color: var(--blue2); }
+    textarea.form-input { resize: vertical; min-height: 120px; }
+    .form-submit {
+      width: 100%; background: var(--blue); color: #fff; border: none;
+      border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background .2s; font-family: inherit;
+    }
+    .form-submit:hover { background: #1d4ed8; }
+    .form-success { background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 10px; padding: 16px; text-align: center; color: #065f46; font-weight: 600; font-size: 14px; display: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,.5);
+      padding: 40px 5%; text-align: center; font-size: 13px;
+    }
+    footer a { color: var(--blue2); text-decoration: none; }
+    .footer-logo { color: #fff; font-weight: 800; font-size: 18px; margin-bottom: 8px; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--navy); padding: 20px 5%; gap: 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+    }
+  </style>
+  <script>
+    // Firestore REST API — no SDK needed, works on all browsers
+    var FIREBASE_PROJECT = "nyakiba-droppoint";
+    var FIREBASE_KEY = "AIzaSyBeO7RI6iojClImevc6U4vKzdemGI7cWkc";
+
+    function statusInfo(status) {
+      if (status === "picked_up") return { icon: "✅", label: "Picked Up",          color: "#10b981", bg: "#ecfdf5" };
+      if (status === "notified")  return { icon: "📱", label: "Customer Notified",  color: "#3b82f6", bg: "#eff6ff" };
+      if (status === "pending")   return { icon: "🕐", label: "Pending Drop-Off",   color: "#8b5cf6", bg: "#ede9fe" };
+      return                             { icon: "📦", label: "Ready for Pickup",   color: "#f59e0b", bg: "#fef3c7" };
+    }
+
+    function fmt(ts) {
+      return new Date(ts).toLocaleDateString("en-KE", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function errorHtml(msg) {
+      return '<div style="background:#fef2f2;color:#ef4444;padding:14px 16px;border-radius:10px;font-size:14px;font-weight:600;">⚠️ ' + msg + '</div>';
+    }
+
+    function packageCardHtml(p) {
+      var s = statusInfo(p.status);
+      var html = '';
+      html += '<div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-left:4px solid ' + s.color + '">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">';
+      html += '<span style="font-family:monospace;font-size:22px;font-weight:900;color:#6366f1">' + (p.pkgLabel || p.id) + '</span>';
+      html += '<span style="background:' + s.bg + ';color:' + s.color + ';font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px">' + s.icon + ' ' + s.label + '</span>';
+      html += '</div>';
+      html += '<div style="display:grid;gap:10px;background:#f8fafc;border-radius:10px;padding:16px;margin-bottom:16px">';
+      html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Name</span><span style="color:#1e293b;font-weight:700">' + p.recipientName + '</span></div>';
+      if (p.businessName) html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">From</span><span style="color:#1e293b;font-weight:600">' + p.businessName + '</span></div>';
+      if (p.description)  html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Item</span><span style="color:#1e293b;font-weight:600">' + p.description + '</span></div>';
+      html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Arrived</span><span style="color:#1e293b;font-weight:600">' + fmt(p.createdAt) + '</span></div>';
+      if (p.pickedUpAt) html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Collected</span><span style="color:#10b981;font-weight:700">' + fmt(p.pickedUpAt) + '</span></div>';
+      html += '</div>';
+      html += '<div style="background:#eff6ff;border-radius:10px;padding:14px;font-size:13px;color:#1e40af;line-height:1.6">';
+      html += '<strong>📍 Nyakiba DropPoint</strong><br/>Bank House, 5th Floor, Shop No. 22, Nairobi<br/>Mon&ndash;Sat &middot; 8:00 AM &ndash; 8:00 PM';
+      html += '</div></div>';
+      return html;
+    }
+
+    window.trackPackage = async function(pkgIdInput, contactInput, resultDivId) {
+      var resultDiv = document.getElementById(resultDivId);
+      resultDiv.innerHTML = '<div style="text-align:center;padding:20px;color:#64748b;font-size:14px;">🔍 Searching...</div>';
+
+      var pkgId = pkgIdInput.trim().toUpperCase().replace(/^#/, "");
+      var contact = contactInput.trim().toLowerCase();
+
+      if (!pkgId || !contact) {
+        resultDiv.innerHTML = errorHtml("Please enter both your package ID and phone or email.");
+        return;
+      }
+
+      try {
+        var url = "https://firestore.googleapis.com/v1/projects/" + FIREBASE_PROJECT + "/databases/(default)/documents/droppoint/dp-packages?key=" + FIREBASE_KEY;
+        var response = await fetch(url);
+        if (!response.ok) throw new Error("Network error");
+        var data = await response.json();
+
+        if (!data.fields || !data.fields.value) {
+          resultDiv.innerHTML = errorHtml("No packages found in the system yet.");
+          return;
+        }
+
+        var packages = JSON.parse(data.fields.value.stringValue || "[]");
+        var contactDigits = contact.replace(/\D/g, "");
+
+        var pkg = null;
+        for (var i = 0; i < packages.length; i++) {
+          var p = packages[i];
+          var label = (p.pkgLabel || p.id || "").toUpperCase().replace(/^#/, "");
+          var phone = (p.recipientPhone || "").replace(/\D/g, "");
+          var email = (p.recipientEmail || "").toLowerCase();
+          var phoneMatch = contactDigits.length >= 9 && phone.indexOf(contactDigits.slice(-9)) !== -1;
+          var emailMatch = email === contact;
+          if (label === pkgId && (phoneMatch || emailMatch)) {
+            pkg = p;
+            break;
+          }
+        }
+
+        if (!pkg) {
+          resultDiv.innerHTML = errorHtml("No package found. Please check your package ID and phone or email.");
+          return;
+        }
+
+        resultDiv.innerHTML = packageCardHtml(pkg);
+      } catch(e) {
+        resultDiv.innerHTML = errorHtml("Unable to connect. Please try again or visit our shop.");
+      }
+    };
+  </script>
+</head>tml lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyakiba DropPoint — Nairobi Package Pickup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0f2444;
+      --navy2:   #1e3a5f;
+      --blue:    #2563eb;
+      --blue2:   #3b82f6;
+      --light:   #eff6ff;
+      --white:   #ffffff;
+      --gray:    #64748b;
+      --lgray:   #f1f5f9;
+      --text:    #1e293b;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--white); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15,36,68,.96); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;  height: 64px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon { width: 36px; height: 36px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo-text { color: #fff; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { color: rgba(255,255,255,.7); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: var(--blue); color: #fff !important; padding: 8px 20px; border-radius: 8px; font-weight: 700 !important; font-size: 13px !important; }
+    .nav-cta:hover { background: var(--blue2) !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: .3s; }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 60%, #1e4d9e 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(59,130,246,.15) 0%, transparent 60%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,.15); border: 1px solid rgba(59,130,246,.3);
+      color: #93c5fd; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+      padding: 6px 14px; border-radius: 20px; text-transform: uppercase; margin-bottom: 28px;
+    }
+    .hero h1 {
+      color: #fff; font-size: clamp(36px, 6vw, 72px); font-weight: 900;
+      letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 20px; max-width: 800px;
+    }
+    .hero h1 span { color: var(--blue2); }
+    .hero p {
+      color: rgba(255,255,255,.7); font-size: clamp(16px, 2vw, 20px);
+      max-width: 560px; line-height: 1.6; margin-bottom: 40px;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 60px; }
+    .btn-primary {
+      background: var(--blue); color: #fff; text-decoration: none;
+      padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px;
+      border: none; cursor: pointer; transition: background .2s, transform .1s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: #fff; text-decoration: none;
+      padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px;
+      border: 1.5px solid rgba(255,255,255,.3); cursor: pointer; transition: .2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.05); }
+    .hero-stats {
+      display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
+      border-top: 1px solid rgba(255,255,255,.1); padding-top: 40px; width: 100%; max-width: 600px;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { color: #fff; font-size: 32px; font-weight: 900; letter-spacing: -0.03em; }
+    .hero-stat-label { color: rgba(255,255,255,.5); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 5%; }
+    .section-label { font-size: 12px; font-weight: 700; color: var(--blue); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 900; color: var(--navy); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+    .section-sub { font-size: 17px; color: var(--gray); line-height: 1.6; max-width: 560px; }
+    .section-center { text-align: center; }
+    .section-center .section-sub { margin: 0 auto; }
+
+    /* ── HOW IT WORKS ── */
+    .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 48px; }
+    .how-card {
+      background: var(--lgray); border-radius: 16px; padding: 28px 24px;
+      border-top: 3px solid var(--blue2); position: relative;
+    }
+    .how-num { font-size: 48px; font-weight: 900; color: rgba(37,99,235,.12); letter-spacing: -0.03em; line-height: 1; margin-bottom: 12px; }
+    .how-icon { font-size: 28px; margin-bottom: 12px; }
+    .how-title { font-weight: 800; font-size: 16px; color: var(--navy); margin-bottom: 8px; }
+    .how-desc { font-size: 14px; color: var(--gray); line-height: 1.6; }
+
+    /* ── SERVICES / PRICING ── */
+    .services-bg { background: var(--navy); }
+    .services-bg .section-title { color: #fff; }
+    .services-bg .section-label { color: #93c5fd; }
+    .services-bg .section-sub { color: rgba(255,255,255,.6); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 48px; }
+    .service-card {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px; padding: 28px 24px; transition: background .2s;
+    }
+    .service-card:hover { background: rgba(255,255,255,.1); }
+    .service-icon { font-size: 32px; margin-bottom: 14px; }
+    .service-name { color: #fff; font-weight: 800; font-size: 17px; margin-bottom: 8px; }
+    .service-desc { color: rgba(255,255,255,.6); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+    .service-price {
+      display: inline-flex; align-items: baseline; gap: 4px;
+      background: var(--blue); color: #fff; padding: 6px 14px; border-radius: 8px;
+    }
+    .service-price-amount { font-size: 20px; font-weight: 900; }
+    .service-price-label { font-size: 12px; opacity: .8; }
+
+    /* ── WHY US ── */
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 48px; }
+    .why-card { display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--lgray); border-radius: 14px; }
+    .why-icon { font-size: 24px; flex-shrink: 0; background: var(--light); width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .why-title { font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
+    .why-desc { font-size: 13px; color: var(--gray); line-height: 1.5; }
+
+    /* ── ABOUT ── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about-img {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 100%);
+      border-radius: 20px; aspect-ratio: 4/3; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 40px;
+    }
+    .about-img-icon { font-size: 64px; margin-bottom: 16px; }
+    .about-img-text { color: #fff; font-weight: 700; font-size: 18px; text-align: center; }
+    .about-img-sub { color: rgba(255,255,255,.6); font-size: 13px; margin-top: 6px; text-align: center; }
+    .about-detail { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 20px; }
+    .about-detail-icon { color: var(--blue); font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .about-detail-title { font-weight: 700; color: var(--navy); font-size: 15px; }
+    .about-detail-desc { font-size: 14px; color: var(--gray); line-height: 1.5; margin-top: 2px; }
+
+    /* ── CONTACT ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; margin-top: 48px; }
+    .contact-info-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 24px; }
+    .contact-info-icon { width: 44px; height: 44px; background: var(--light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .contact-info-label { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .06em; }
+    .contact-info-value { font-size: 15px; font-weight: 600; color: var(--navy); margin-top: 2px; }
+    .contact-form { background: var(--lgray); border-radius: 20px; padding: 32px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .form-input {
+      width: 100%; padding: 11px 14px; border-radius: 8px;
+      border: 1.5px solid #e2e8f0; font-size: 14px; font-family: inherit;
+      outline: none; color: var(--text); background: #fff; transition: border-color .2s;
+    }
+    .form-input:focus { border-color: var(--blue2); }
+    textarea.form-input { resize: vertical; min-height: 120px; }
+    .form-submit {
+      width: 100%; background: var(--blue); color: #fff; border: none;
+      border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background .2s; font-family: inherit;
+    }
+    .form-submit:hover { background: #1d4ed8; }
+    .form-success { background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 10px; padding: 16px; text-align: center; color: #065f46; font-weight: 600; font-size: 14px; display: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,.5);
+      padding: 40px 5%; text-align: center; font-size: 13px;
+    }
+    footer a { color: var(--blue2); text-decoration: none; }
+    .footer-logo { color: #fff; font-weight: 800; font-size: 18px; margin-bottom: 8px; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--navy); padding: 20px 5%; gap: 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+    }
+  </style>
+  <!-- Firebase Compat SDK (works as global window functions) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBeO7RI6iojClImevc6U4vKzdemGI7cWkc",
+      authDomain: "nyakiba-droppoint.firebaseapp.com",
+      projectId: "nyakiba-droppoint",
+      storageBucket: "nyakiba-droppoint.firebasestorage.app",
+      messagingSenderId: "110177019073",
+      appId: "1:110177019073:web:cd45745307aebd15e66040"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    window.trackPackage = async function(pkgIdInput, contactInput, resultDivId) {
+      const resultDiv = document.getElementById(resultDivId);
+      resultDiv.innerHTML = '<div style="text-align:center;padding:20px;color:#64748b;font-size:14px;">🔍 Searching...</div>';
+
+      const pkgId = pkgIdInput.trim().toUpperCase().replace(/^#/, "");
+      const contact = contactInput.trim().toLowerCase();
+
+      if (!pkgId || !contact) {
+        resultDiv.innerHTML = '<div style="background:#fef2f2;color:#ef4444;padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600;">Please enter both your package ID and phone/email.</div>';
+        return;
+      }
+
+      try {
+        const snap = await db.collection("droppoint").doc("dp-packages").get();
+        if (!snap.exists) { resultDiv.innerHTML = errorHtml("No packages found in the system."); return; }
+
+        const packages = JSON.parse(snap.data().value || "[]");
+        const contactDigits = contact.replace(/\D/g, "");
+
+        const pkg = packages.find(p => {
+          const label = (p.pkgLabel || p.id || "").toUpperCase().replace(/^#/, "");
+          const phone = (p.recipientPhone || "").replace(/\D/g, "");
+          const email = (p.recipientEmail || "").toLowerCase();
+          return label === pkgId && (
+            (contactDigits.length >= 9 && phone.includes(contactDigits.slice(-9))) ||
+            email === contact
+          );
+        });
+
+        if (!pkg) {
+          resultDiv.innerHTML = errorHtml("No package found. Please check your package ID and phone/email.");
+          return;
+        }
+
+        resultDiv.innerHTML = packageCardHtml(pkg);
+      } catch(e) {
+        resultDiv.innerHTML = errorHtml("Unable to connect. Please try again or visit our shop.");
+      }
+    };
+
+    function errorHtml(msg) {
+      return '<div style="background:#fef2f2;color:#ef4444;padding:14px 16px;border-radius:10px;font-size:14px;font-weight:600;">⚠️ ' + msg + '</div>';
+    }
+
+    function statusInfo(status) {
+      if (status === "picked_up") return { icon: "✅", label: "Picked Up", color: "#10b981", bg: "#ecfdf5" };
+      if (status === "notified")  return { icon: "📱", label: "Customer Notified", color: "#3b82f6", bg: "#eff6ff" };
+      if (status === "pending")   return { icon: "🕐", label: "Pending Drop-Off", color: "#8b5cf6", bg: "#ede9fe" };
+      return                             { icon: "📦", label: "Ready for Pickup", color: "#f59e0b", bg: "#fef3c7" };
+    }
+
+    function fmt(ts) {
+      return new Date(ts).toLocaleDateString("en-KE", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function packageCardHtml(p) {
+      var s = statusInfo(p.status);
+      var arrivedStr = fmt(p.createdAt);
+      var collectedStr = p.pickedUpAt ? fmt(p.pickedUpAt) : null;
+      var html = '';
+      html += '<div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-left:4px solid ' + s.color + '">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">';
+      html += '<span style="font-family:monospace;font-size:22px;font-weight:900;color:#6366f1">' + (p.pkgLabel || p.id) + '</span>';
+      html += '<span style="background:' + s.bg + ';color:' + s.color + ';font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px">' + s.icon + ' ' + s.label + '</span>';
+      html += '</div>';
+      html += '<div style="display:grid;gap:10px;background:#f8fafc;border-radius:10px;padding:16px;margin-bottom:16px">';
+      html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Name</span><span style="color:#1e293b;font-weight:700">' + p.recipientName + '</span></div>';
+      if (p.businessName) html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">From</span><span style="color:#1e293b;font-weight:600">' + p.businessName + '</span></div>';
+      if (p.description) html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Item</span><span style="color:#1e293b;font-weight:600">' + p.description + '</span></div>';
+      html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Arrived</span><span style="color:#1e293b;font-weight:600">' + arrivedStr + '</span></div>';
+      if (collectedStr) html += '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em">Collected</span><span style="color:#10b981;font-weight:700">' + collectedStr + '</span></div>';
+      html += '</div>';
+      html += '<div style="background:#eff6ff;border-radius:10px;padding:14px;font-size:13px;color:#1e40af;line-height:1.5">';
+      html += '<strong>Nyakiba DropPoint</strong> &middot; Bank House, 5th Floor, Shop No. 22, Nairobi<br/>';
+      html += 'Mon&ndash;Sat &middot; 8:00 AM &ndash; 8:00 PM';
+      html += '</div></div>';
+      return html;
+    }
+
