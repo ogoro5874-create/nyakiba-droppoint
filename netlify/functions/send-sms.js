@@ -10,12 +10,16 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: "Phone and message required" }) };
     }
 
-    const params = new URLSearchParams({
-      username: "Nyakiba",
-      to: phone,
-      message: message,
-      from: ""
-    });
+    // Format phone for Kenya
+    let formattedPhone = phone.replace(/\D/g, "");
+    if (formattedPhone.startsWith("0")) formattedPhone = "254" + formattedPhone.slice(1);
+    if (!formattedPhone.startsWith("254")) formattedPhone = "254" + formattedPhone;
+    formattedPhone = "+" + formattedPhone;
+
+    const params = new URLSearchParams();
+    params.append("username", "Nyakiba");
+    params.append("to", formattedPhone);
+    params.append("message", message);
 
     const response = await fetch("https://api.africastalking.com/version1/messaging", {
       method: "POST",
@@ -27,18 +31,27 @@ exports.handler = async (event) => {
       body: params.toString()
     });
 
-    const data = await response.json();
+    const text = await response.text();
+    console.log("AT Response:", text);
 
-    if (data.SMSMessageData && data.SMSMessageData.Recipients && data.SMSMessageData.Recipients.length > 0) {
-      const recipient = data.SMSMessageData.Recipients[0];
-      if (recipient.status === "Success") {
+    let data;
+    try { data = JSON.parse(text); } catch(e) { data = { raw: text }; }
+
+    if (data.SMSMessageData) {
+      const recipients = data.SMSMessageData.Recipients || [];
+      const success = recipients.some(r => r.status === "Success" || r.statusCode === 101);
+      if (success) {
         return { statusCode: 200, body: JSON.stringify({ success: true }) };
       }
     }
 
-    return { statusCode: 400, body: JSON.stringify({ error: "SMS failed", details: data }) };
+    return { 
+      statusCode: 400, 
+      body: JSON.stringify({ error: "SMS failed", details: data }) 
+    };
 
   } catch (e) {
+    console.error("Error:", e.message);
     return { statusCode: 500, body: JSON.stringify({ error: e.message }) };
   }
 };
